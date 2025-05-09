@@ -1,6 +1,7 @@
 // controllers/evento.controller.js
 
 import Evento from '../models/Evento.js';
+import Asistente from '../models/Asistente.js';
 
 // Crear un nuevo evento
 export const crearEvento = async (req, res) => {
@@ -14,25 +15,39 @@ export const crearEvento = async (req, res) => {
 };
 
 // Obtener todos los eventos
+// Obtener todos los eventos con trabajadores y asistentes
 export const obtenerEventos = async (req, res) => {
   try {
-    const eventos = await Evento.find().populate('trabajadores', 'nombre correo');
+    const eventos = await Evento.find().populate('trabajadores', 'nombre correo').lean();
+
+    // Agregamos los asistentes a cada evento
+    for (const evento of eventos) {
+      const asistentes = await Asistente.find({ evento: evento._id }, 'nombre correo telefono');
+      evento.asistentes = asistentes;
+    }
+
     res.json(eventos);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener eventos', error });
   }
 };
 
-// Obtener un evento por ID
+// Obtener un evento por ID con trabajadores y asistentes
 export const obtenerEventoPorId = async (req, res) => {
   try {
-    const evento = await Evento.findById(req.params.id).populate('trabajadores', 'nombre correo');
+    const evento = await Evento.findById(req.params.id).populate('trabajadores', 'nombre correo').lean();
     if (!evento) return res.status(404).json({ mensaje: 'Evento no encontrado' });
+
+    const asistentes = await Asistente.find({ evento: evento._id }, 'nombre correo telefono');
+    evento.asistentes = asistentes;
+
     res.json(evento);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener el evento', error });
   }
 };
+
+
 
 // Actualizar un evento
 export const actualizarEvento = async (req, res) => {
