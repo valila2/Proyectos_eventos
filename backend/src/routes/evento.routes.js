@@ -8,11 +8,11 @@ import {
   actualizarEvento,
   eliminarEvento
 } from '../controllers/evento.controller.js';
-
+import { verificarToken } from '../middlewares/auth.js'; 
 const router = Router();
 
-router.post('/eventos/', crearEvento);
-router.get('/eventos/', obtenerEventos);
+router.post('/eventos/', verificarToken, crearEvento);
+router.get('/eventos/', verificarToken, obtenerEventos);
 router.get('/eventos/:id', obtenerEventoPorId);
 router.put('/eventos/:id', actualizarEvento);
 router.delete('/eventos/:id', eliminarEvento);

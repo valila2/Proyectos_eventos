@@ -1,6 +1,6 @@
 // controllers/usuario.controller.js
 import Usuario from '../models/Usuario.js';
-
+import bcrypt from "bcryptjs";
 // Crear un nuevo usuario
 export const crearUsuario = async (req, res) => {
     const { nombre, correo, contrasena, rol } = req.body;
@@ -16,7 +16,10 @@ export const crearUsuario = async (req, res) => {
     if (usuarioExistente) {
       return res.status(409).json({ mensaje: 'El correo ya está registrado' });
     }
-      const nuevoUsuario = new Usuario({ nombre, correo, contrasena, rol });
+    const salt = await bcrypt.genSalt(10);
+    const claveCifrada = await bcrypt.hash(contrasena, salt);
+
+      const nuevoUsuario = new Usuario({ nombre, correo, contrasena:claveCifrada, rol });
       await nuevoUsuario.save();
       res.status(201).json(nuevoUsuario);
     } catch (error) {
