@@ -1,0 +1,36 @@
+.admin-panel {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #2d3748;
+  color: white;
+  padding: 1rem;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 1rem 0;
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.sidebar ul li a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f7fafc;
+}
