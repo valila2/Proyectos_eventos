@@ -1,36 +1,29 @@
-.admin-panel {
-  display: flex;
-  height: 100vh;
+.nav-link {
+  transition: all 0.2s ease-in-out;
+  padding: 10px 15px;
+  cursor: pointer; /* Mostrar que es clickeable */
 }
 
-.sidebar {
-  width: 200px;
-  background-color: #2d3748;
-  color: white;
-  padding: 1rem;
+.nav-link:hover {
+  background-color: #e9ecef;
+  border-radius: 10px;
+  text-decoration: none; /* Por si algún enlace tiene subrayado */
 }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar ul li {
-  margin: 1rem 0;
-}
-
-.sidebar ul li a {
-  color: white;
-  text-decoration: none;
-}
-
-.sidebar ul li a.active {
+.active {
   font-weight: bold;
-  text-decoration: underline;
+  box-shadow: 0 0 0 2px #0d6efd;
+  border-radius: 10px; /* Para que coincida con el hover */
+  color: #0d6efd; /* Refuerza el color activo */
 }
 
-.admin-content {
-  flex: 1;
-  padding: 2rem;
-  background-color: #f7fafc;
+/* El botón móvil ya tiene un buen z-index, perfecto */
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    z-index: 1050;
+  }
+
+  main {
+    margin-top: 4rem;
+  }
 }
