@@ -119,6 +119,17 @@ const Eventos = () => {
     modal.show();
   };
 
+  const formatearFecha = (fecha) => {
+    const [anio, mes, dia] = fecha.split("T")[0].split("-");
+    const fechaLegible = new Date(`${anio}-${mes}-${dia}T00:00:00`);
+    return fechaLegible.toLocaleDateString("es-CO", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
     <div className="container mt-4">
       <h2>LISTA DE EVENTOS</h2>
@@ -194,13 +205,7 @@ const Eventos = () => {
             {eventos.map((ev) => (
               <tr key={ev.id}>
                 <td>{ev.nombre}</td>
-                <td>
-                  {new Date(ev.fecha).toLocaleDateString("es-CO", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  })}
-                </td>
+                <td>{formatearFecha(ev.fecha)}</td>
                 <td>{ev.lugar}</td>
                 <td>
                   {ev.valor.toLocaleString("es-CO", {
@@ -275,11 +280,7 @@ const Eventos = () => {
                     </div>
                     <div className="col-md-6 mb-3">
                       <strong>Fecha:</strong>
-                      <p>
-                        {new Date(eventoSeleccionado.fecha).toLocaleDateString(
-                          "es-CO"
-                        )}
-                      </p>
+                      <p>{formatearFecha(eventoSeleccionado.fecha)}</p>
                     </div>
                     <div className="col-md-6 mb-3">
                       <strong>Lugar:</strong>
@@ -360,9 +361,8 @@ const Eventos = () => {
               )}
 
               <li
-                className={`page-item ${
-                  paginaActual === totalPaginas ? "disabled" : ""
-                }`}
+                className={`page-item ${paginaActual === totalPaginas ? "disabled" : ""
+                  }`}
               >
                 <button
                   className="page-link"
@@ -373,9 +373,8 @@ const Eventos = () => {
               </li>
 
               <li
-                className={`page-item ${
-                  paginaActual === totalPaginas ? "disabled" : ""
-                }`}
+                className={`page-item ${paginaActual === totalPaginas ? "disabled" : ""
+                  }`}
               >
                 <button
                   className="page-link"
