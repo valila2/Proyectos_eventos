@@ -18,19 +18,62 @@ export const crearEvento = async (req, res) => {
 // Obtener todos los eventos con trabajadores y asistentes
 export const obtenerEventos = async (req, res) => {
   try {
-    const eventos = await Evento.find().populate('trabajadores', 'nombre correo').lean();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    // Agregamos los asistentes a cada evento
-    for (const evento of eventos) {
-      const asistentes = await Asistente.find({ evento: evento._id }, 'nombre correo telefono');
-      evento.asistentes = asistentes;
+    const fecha = req.query.fecha;
+
+    const filtro = {};
+
+    if (fecha) {
+      // Si solo quieres los eventos exactamente en esa fecha:
+      const fechaInicio = new Date(fecha);
+      const fechaFin = new Date(fecha);
+      fechaFin.setDate(fechaFin.getDate() + 1); // siguiente día para rango
+
+      filtro.fecha = {
+        $gte: fechaInicio,
+        $lt: fechaFin
+      };
     }
 
-    res.json(eventos);
+    const total = await Evento.countDocuments(filtro);
+
+    const eventos = await Evento.aggregate([
+      { $match: filtro },
+      { $sort: { fecha: 1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: 'asistentes',
+          localField: '_id',
+          foreignField: 'evento',
+          as: 'asistentes'
+        }
+      },
+      {
+        $lookup: {
+          from: 'trabajadores',
+          localField: '_id',
+          foreignField: 'evento',
+          as: 'trabajadores'
+        }
+      }
+    ]);
+
+    res.json({
+      eventos,
+      totalEventos: total,
+      totalPages: Math.ceil(total / limit)
+    });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener eventos', error });
   }
 };
+
+
 
 // Obtener un evento por ID con trabajadores y asistentes
 export const obtenerEventoPorId = async (req, res) => {
@@ -72,3 +115,27 @@ export const eliminarEvento = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al eliminar el evento', error });
   }
 };
+export const pruebaRegistro = async (req, res) => {
+  try {
+    const eventos = [];
+
+    for (let i = 1; i <= 100; i++) {
+      const fecha = new Date();
+      fecha.setDate(fecha.getDate() + i); // Fecha hacia el futuro
+
+      eventos.push({
+        nombre: `Evento ${i}`,
+        fecha: fecha,
+        lugar: `Lugar ${i}`,
+        descripcion: `Descripción del evento número ${i}`,
+        valor: Math.floor(Math.random() * (200000 - 50000 + 1)) + 50000, // Entre 50.000 y 200.000
+      });
+    }
+
+    await Evento.insertMany(eventos);
+    res.status(201).json({ mensaje: "100 eventos creados con éxito" });
+  } catch (error) {
+    console.error("Error al crear eventos de prueba:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+}

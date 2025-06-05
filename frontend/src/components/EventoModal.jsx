@@ -22,7 +22,7 @@ const ModalEvento = ({ form, handleChange, handleSubmit, editing, setEditing, se
             </div>
             <div className="mb-3">
               <label className="form-label">Fecha</label>
-              <input name="fecha" type="date" className="form-control" value={form.fecha} onChange={handleChange} required />
+              <input name="fecha" type="date" className="form-control" value={form.fecha} onChange={handleChange} min={new Date().toISOString().split("T")[0]} required />
             </div>
             <div className="mb-3">
               <label className="form-label">Lugar</label>

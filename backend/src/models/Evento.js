@@ -8,6 +8,7 @@ const eventoSchema = new Schema({
   lugar:         { type: String, required: true },
   fecha:         { type: Date, required: true },
   valor:         { type: Number, required: true },
+  descripcion:   { type: String, requires: true},
   trabajadores:  [{ type: Schema.Types.ObjectId, ref: 'Usuario' }]
 }, { timestamps: true });  // `timestamps` añade createdAt y updatedAt automáticamente
 

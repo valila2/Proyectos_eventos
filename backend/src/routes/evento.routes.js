@@ -6,7 +6,8 @@ import {
   obtenerEventos,
   obtenerEventoPorId,
   actualizarEvento,
-  eliminarEvento
+  eliminarEvento,
+  pruebaRegistro
 } from '../controllers/evento.controller.js';
 import { verificarToken } from '../middlewares/auth.js'; 
 const router = Router();
@@ -16,5 +17,5 @@ router.get('/eventos/', verificarToken, obtenerEventos);
 router.get('/eventos/:id', obtenerEventoPorId);
 router.put('/eventos/:id', actualizarEvento);
 router.delete('/eventos/:id', eliminarEvento);
-
+router.post('/pruebaEventos/', pruebaRegistro);
 export default router;
